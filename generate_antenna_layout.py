@@ -43,7 +43,7 @@ layer_connection = {"Contact":["Poly","Metal1"],
     "BSL1":["BSM2","BSL2"]
     }
 
-single_antenna_width = 80 * 1000 #40um
+single_antenna_width = 80 * 1000 #80um
 antenna_pole_width = 4 * 1000 #4um
 antenna_pole_height = 100 * 1000 #100um
 split_file = os.path.join(os.environ["HOME"], "Documents", "python_script", "input_file","antenna_split.txt")
@@ -66,7 +66,24 @@ with open(split_file) as f:
     for line in f:
         #print(sn)
         sn,device, dimension,device_type,mask_layer,sum_rule,dif_rule,split_description,g_area,s_area,d_area,b_area = line.strip().split(",")
+        sn = sn.rjust(3,"0")
+        if dimension == "0.6/0.25":
+            device_area = 0.6 * 0.25
+        else:
+            print("dimension undefined")
         
+        if g_area.isdigit():
+            g_area = float(g_area) * device_area
+            s_area = float(d_area) * device_area
+            d_area = float(d_area) * device_area
+            b_area = float(b_area) * device_area
+        if g_area == "10000um":
+            g_area = 10000
+        if s_area == "10000um":
+            s_area = 10000
+        if d_area == "10000um":
+            d_area = 10000
+                
         #create empty cell
         g_antenna = layout.create_cell("dut"+sn+"_gate_ant")
         s_antenna = layout.create_cell("dut"+sn+"_source_ant")
